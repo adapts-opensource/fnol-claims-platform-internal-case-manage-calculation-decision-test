@@ -1,0 +1,9 @@
+{
+  "language": "java",
+  "status": "disabled",
+  "steps": [],
+  "tool_available": false,
+  "enforced": false,
+  "package_root": "/var/tmp/app/fnol-phased-1783350481/fnol_claims_platform_internal_case_management_calculation_decision_test_package/fnol_claims_platform_internal_case_management_calculation_decision_test_package",
+  "request_id": "fnol-phased-1783350481"
+}

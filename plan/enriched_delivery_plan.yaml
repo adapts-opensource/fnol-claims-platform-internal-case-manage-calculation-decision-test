@@ -1,0 +1,589 @@
+capability_summary:
+  capability_id: global
+  capability_name: FNOL Claims Platform
+  operation_primary: Internal Case Management:calculation:decision
+  business_goal: Capture, validate, triage, and open Florida residential property claims across multiple channels, ensuring accurate policy matching, duplicate detection, initial classification, statutory acknowledgment, and reserve initialization while preparing the file for downstream investigation, reserving, vendor assignment, and closure.
+  enriched_description: The FNOL capability serves as the authoritative entry point for the claims lifecycle. It ingests loss reports via web, mobile, IVR, agent portal, and system integrations. The platform performs real-time policy matching against active/recently expired policies, applies multi-factor similarity scoring for duplicate detection, classifies initial claim types, assigns routing priorities, generates statutory acknowledgments, calculates initial reserves based on claim type and exposure, and constructs a Guidewire-style Claim/Incident/Exposure model. All decisions are auditable, explainable, configurable, and built for high-volume catastrophic event handling with strict SLA adherence.
+
+industry_context:
+  industry_name: Property & Casualty Insurance (Florida Residential)
+  country_or_region: Florida, USA
+  relevant_domain_concepts:
+  - First Notice of Loss (FNOL)
+  - Policy Match & Resolution
+  - Duplicate Claim Detection
+  - Claim Classification & Triage
+  - Guidewire-style Claim/Incident/Exposure Model
+  - Statutory Acknowledgment & Prompt Pay
+  - Initial Reserve Calculation
+  - Routing & Assignment
+  industry_specific_workflows:
+  - Multi-channel intake ingestion
+  - Real-time policy validation and match resolution
+  - Duplicate detection with similarity scoring and reviewer workflow
+  - Initial classification and routing rule execution
+  - Statutory acknowledgment generation and delivery
+  - Reserve initialization and exposure modeling
+  - Handoff to adjuster, vendor, or automated handling path
+  regulatory_or_policy_drivers:
+  - Florida Office of Insurance Regulation (OIR) FNOL reporting and prompt pay statutes (e.g., [Example: SB 1540 provisions])
+  - Data privacy and consumer protection requirements (e.g., [Example: Florida Preemption Act, HIPAA/CCPA if applicable])
+  - Claims handling fair practice guidelines
+  - Audit and examination readiness requirements
+  key_external_data_categories:
+  - Policy and coverage data
+  - Property valuation and risk attributes
+  - Catastrophe/event registries
+  - Fraud/risk scoring services
+  - Compliance/reference data (jurisdictional calendars, rate tables)
+  operational_constraints:
+  - Sub-24-hour statutory acknowledgment SLA
+  - Idempotent intake processing for high-volume events
+  - Full audit trail and decision explainability for regulatory exams
+  - Configurable rules without code deployment
+  terminology:
+  - term: FNOL
+    meaning: First Notice of Loss; the initial intake and validation step of the claims lifecycle
+  - term: Policy Match
+    meaning: Resolution of reported loss data to an active or recently expired policy record
+  - term: Duplicate Detection
+    meaning: Algorithmic and manual review of overlapping loss reports for the same risk/event
+  - term: Exposure Model
+    meaning: Structured representation of insured property, coverage limits, deductibles, and loss details
+  - term: Guidewire-style Model
+    meaning: Industry-standard hierarchical claim structure (Claim -> Incident -> Exposure)
+
+user_stories:
+- id: US-001
+  title: Policyholder/Agent submits FNOL intake
+  persona: Claims Intake Specialist (Agent/Policyholder)
+  persona_type: primary_business_user
+  trigger: Policyholder or authorized agent reports a loss via web portal, mobile app, IVR, or phone
+  story: As a policyholder or agent, I want to submit a complete loss report across multiple channels so that the claim can be accurately matched to my policy, validated, and routed to the appropriate handling path without delay.
+  business_value: Reduces intake friction, ensures accurate data capture, accelerates statutory acknowledgment, and improves customer experience during stressful events.
+  priority: P0
+  preconditions:
+  - User is authenticated or provided with valid policy/risk identifiers
+  - Channel integration is online and accepting submissions
+  algorithm_to_be_tested:
+    name: Multi-Channel Intake Validation & Normalization Algorithm
+    purpose: Validate, normalize, and enrich incoming FNOL data before persistence
+    applies_when: Intake submission received from any channel
+    description: Parses raw intake payload, validates required fields, normalizes addresses/dates, enriches with channel metadata, and prepares for policy matching
+    input_criteria:
+      required_inputs:
+      - policy_number_or_risk_address
+      - date_of_loss
+      - cause_of_loss
+      - reporter_type
+      - contact_information
+      optional_inputs:
+      - estimated_damages
+      - damaged_area_description
+      - prior_claim_reference
+      input_validation:
+      - Date of loss must not be in the future
+      - Policy number must match format regex for FL property forms
+      - Cause of loss must map to reference taxonomy
+      - Required fields cannot be null or empty
+      freshness_requirements:
+      - Real-time processing required (< 2 seconds)
+      processing_steps:
+      - step: 1
+        description: Parse and schema-validate JSON/XML payload
+      - step: 2
+        description: Normalize address using reference geocoding service
+      - step: 3
+        description: Map cause of loss to internal taxonomy
+      - step: 4
+        description: Attach channel metadata and correlation ID
+      business_rules:
+      - Reject if mandatory fields are missing or invalid
+      - Flag estimated damages > $500k for manual review
+      decision_points:
+      - decision: Validation Pass/Fail
+        rule: If validation fails, return structured error to channel
+        expected_outcome: Intake rejected with actionable feedback or proceeds to persistence
+      output_criteria:
+      success_outputs:
+      - Normalized intake record with correlation_id
+      - Validation status: PASSED
+      failure_outputs:
+      - Validation status: FAILED with field-level errors
+      status_updates:
+      - IntakeStatus: SUBMITTED -> VALIDATED
+      emitted_events:
+      - fnol.intake.validated
+      user_visible_outputs:
+      - Confirmation message with intake reference number
+      edge_cases:
+      - Partial submission due to network timeout
+      - Special characters in address causing normalization failure
+      negative_scenarios:
+      - Future date of loss
+      - Invalid policy format
+      explainability_expectations:
+      - Log which fields passed/failed validation and why
+      audit_evidence:
+      - Raw payload hash
+      - Validation timestamp and processor version
+      sample_test_scenarios:
+      - scenario: Valid standard submission
+        given: Complete payload with valid policy number and date
+        when: POST /intake is called
+        then: Returns 202 Accepted with normalized record and correlation ID
+      main_success_flow:
+      - step: User submits form
+        description: Channel validates syntax and forwards to FNOL service
+      alternate_flows:
+      - scenario: Missing optional fields
+        behavior: Proceeds with defaults, flags for follow-up
+      exception_flows:
+      - scenario: External geocoding timeout
+        behavior: Uses last known coordinates, marks for manual review
+      acceptance_criteria:
+      - System rejects invalid payloads with field-level error codes
+      - Valid payloads produce normalized records within 2s
+      - All validation decisions are logged with timestamps
+      data_dependencies:
+      - Reference taxonomy for causes of loss
+      - Address normalization service
+      audit_or_explainability_needs:
+      - Full input payload hash
+      - Validation rule version used
+      layer_implications:
+      integration:
+      - API gateway routing
+      - Channel adapter normalization
+      application:
+      - Intake validation service
+      - Reference data cache
+- id: US-002
+  title: Resolve ambiguous policy matches
+  persona: FNOL Triage Analyst
+  persona_type: operations_user
+  trigger: System identifies multiple active policies matching the reported risk/address/insured
+  story: As a triage analyst, I want to review and resolve ambiguous policy matches so that the claim is correctly attributed to the right policy, coverage, and handling path.
+  business_value: Prevents misallocation of reserves, ensures accurate coverage determination, and reduces rework from downstream handling errors.
+  priority: P0
+  preconditions:
+  - Intake record is validated
+  - Policy match algorithm returns >1 candidate with confidence score > threshold but < 100%
+  algorithm_to_be_tested:
+    name: Policy Match Resolution Scoring Algorithm
+    purpose: Rank and resolve multiple candidate policies based on weighted attributes
+    applies_when: Multiple policy candidates returned for a single intake
+    description: Calculates match confidence using policy number exactness, address proximity, insured name similarity, effective/expiration dates, product form, and occupancy type
+    input_criteria:
+      required_inputs:
+      - reported_policy_number
+      - reported_risk_address
+      - named_insured_identity
+      - date_of_loss
+      - product_form
+      - occupancy_relationship
+      optional_inputs:
+      - tenant_landlord_flag
+      - prior_claim_history
+      input_validation:
+      - All candidate policies must be active or expired within [Example: 30 days]
+      - Address must be normalized before comparison
+      freshness_requirements:
+      - Policy status must reflect real-time PAS data
+      processing_steps:
+      - step: 1
+        description: Compute exact match score for policy number
+      - step: 2
+        description: Calculate address similarity using geospatial distance
+      - step: 3
+        description: Evaluate insured name similarity (fuzzy match)
+      - step: 4
+        description: Apply product form and occupancy weights
+      - step: 5
+        description: Aggregate scores using configurable weights
+      business_rules:
+      - Exact policy number match overrides address similarity
+      - Expired policies require manual confirmation if > 7 days out of coverage
+      decision_points:
+      - decision: Single High-Confidence Match
+        rule: If max score > 0.95, auto-assign policy
+        expected_outcome: Policy resolved, proceed to duplicate check
+      - decision: Multiple Medium-Confidence Matches
+        rule: If max score between 0.75 and 0.95, create review task
+        expected_outcome: Task created for analyst
+      output_criteria:
+      success_outputs:
+      - Resolved policy ID with confidence score
+      - Task ID if manual review required
+      failure_outputs:
+      - No match: Create Unmatched FNOL shell
+      status_updates:
+      - PolicyMatchStatus: PENDING -> RESOLVED or REVIEW_REQUIRED or UNMATCHED
+      emitted_events:
+      - fnol.policy.matched
+      - fnol.policy.review_requested
+      user_visible_outputs:
+      - Task queue item for analyst with candidate comparison view
+      edge_cases:
+      - Policy recently renewed with new number
+      - Corporate vs. personal insured name mismatch
+      negative_scenarios:
+      - All candidates expired > 30 days
+      - Address typos causing low similarity
+      explainability_expectations:
+      - Display weighted score breakdown per attribute
+      audit_evidence:
+      - Candidate list with scores
+      - Analyst decision override (if any)
+      sample_test_scenarios:
+      - scenario: Exact policy match
+        given: Policy number matches active policy exactly
+        when: Algorithm runs
+        then: Returns 1.0 confidence, auto-resolves
+      main_success_flow:
+      - step: Analyst views candidates
+        description: Reviews scores, selects correct policy
+      alternate_flows:
+      - scenario: No candidates
+        behavior: Creates Unmatched FNOL shell
+      exception_flows:
+      - scenario: PAS sync delay
+        behavior: Falls back to cached policy data, flags for reconciliation
+      acceptance_criteria:
+      - Algorithm auto-resolves when confidence > 0.95
+      - Tasks generated when 0.75 <= confidence <= 0.95
+      - Unmatched shells created when confidence < 0.75
+      data_dependencies:
+      - Policy Administration System (PAS)
+      - Geocoding reference data
+      audit_or_explainability_needs:
+      - Score breakdown per attribute
+      - Analyst override rationale
+      layer_implications:
+      integration:
+      - PAS query adapter
+      - Geocoding service
+      application:
+      - Policy matching service
+      - Task orchestration
+- id: US-003
+  title: Detect and review potential duplicate claims
+  persona: Claims Handler/Adjuster
+  persona_type: secondary_business_user
+  trigger: System identifies overlapping loss reports for same risk, date, cause, or event
+  story: As a claims handler, I want to review potential duplicate claims so that I can merge, reopen, or reject duplicates without creating fragmented files or compromising audit trails.
+  business_value: Prevents double-paying claims, maintains accurate loss history, and streamlines file management.
+  priority: P0
+  preconditions:
+  - Intake validated and policy matched
+  - Duplicate detection algorithm returns similarity score > threshold
+  algorithm_to_be_tested:
+    name: Duplicate Claim Similarity Scoring Algorithm
+    purpose: Identify likely duplicate claims using multi-factor similarity
+    applies_when: New intake processed after policy match
+    description: Compares policy number, risk address, date of loss, cause of loss, catastrophe event, reporter, damaged area, and prior claim status against open/recent claims
+    input_criteria:
+      required_inputs:
+      - policy_number
+      - risk_address
+      - date_of_loss
+      - cause_of_loss
+      optional_inputs:
+      - catastrophe_event_id
+      - reporter_identity
+      - damaged_area_description
+      - prior_claim_status
+      input_validation:
+      - Only open, reopened, or recently closed claims (within [Example: 12 months]) are considered
+      - Dates must be within plausible loss windows
+      freshness_requirements:
+      - Claims database must reflect real-time status
+      processing_steps:
+      - step: 1
+        description: Query candidate claims within time/address bounds
+      - step: 2
+        description: Compute pairwise similarity scores
+      - step: 3
+        description: Apply business weights (e.g., cause > date)
+      - step: 4
+        description: Aggregate to overall duplicate probability
+      business_rules:
+      - Probability > 0.85 triggers mandatory review task
+      - Probability > 0.95 allows auto-merge with analyst confirmation
+      decision_points:
+      - decision: High Probability Duplicate
+        rule: If > 0.85, create review task
+        expected_outcome: Task assigned to handler
+      - decision: Acceptable Probability
+        rule: If < 0.85, proceed as new claim
+        expected_outcome: New claim created
+      output_criteria:
+      success_outputs:
+      - Review task with candidate claim ID and similarity breakdown
+      - Auto-merge suggestion if > 0.95
+      failure_outputs:
+      - N/A (algorithm always produces a probability)
+      status_updates:
+      - DuplicateStatus: DETECTED -> UNDER_REVIEW or MERGED or CONTINUED
+      emitted_events:
+      - fnol.duplicate.detected
+      - fnol.duplicate.reviewed
+      user_visible_outputs:
+      - Duplicate review panel with side-by-side claim comparison
+      edge_cases:
+      - Supplemental claim for same loss
+      - Reopened claim with updated damages
+      negative_scenarios:
+      - Identical address but different insureds (multi-tenant)
+      - Catastrophe event with high volume of legitimate separate claims
+      explainability_expectations:
+      - Show weighted factor contributions to probability
+      audit_evidence:
+      - Candidate claim IDs
+      - Similarity scores
+      - Handler decision and rationale
+      sample_test_scenarios:
+      - scenario: True duplicate
+        given: Same policy, address, date, cause as open claim
+        when: Algorithm runs
+        then: Returns probability > 0.95, suggests merge
+      main_success_flow:
+      - step: Handler reviews candidates
+        description: Chooses merge, reopen, or continue
+      alternate_flows:
+      - scenario: Supplemental claim
+        behavior: Links as supplemental exposure
+      exception_flows:
+      - scenario: Claims DB read timeout
+        behavior: Proceeds as new claim, flags async reconciliation
+      acceptance_criteria:
+      - Tasks generated when probability > 0.85
+      - Auto-merge suggestion when > 0.95
+      - All decisions logged with rationale
+      data_dependencies:
+      - Claims database
+      - Catastrophe registry
+      audit_or_explainability_needs:
+      - Similarity factor breakdown
+      - Handler override log
+      layer_implications:
+      integration:
+      - Claims DB query adapter
+      - Catastrophe registry sync
+      application:
+      - Duplicate detection service
+      - Review workflow engine
+- id: US-004
+  title: Assign initial claim type and routing path
+  persona: FNOL Triage Analyst
+  persona_type: operations_user
+  trigger: Policy matched and duplicate check completed
+  story: As a triage analyst, I want the system to automatically classify the claim type and assign a handling path so that the claim reaches the right handler or vendor quickly.
+  business_value: Accelerates handling time, ensures appropriate resource allocation, and maintains SLA compliance.
+  priority: P1
+  preconditions:
+  - Policy matched and duplicate resolved
+  - Classification rules are loaded and active
+  algorithm_to_be_tested:
+    name: Initial Claim Classification & Routing Algorithm
+    purpose: Assign claim type and routing path based on loss characteristics
+    applies_when: Duplicate check passed
+    description: Evaluates cause of loss, damage extent, coverage type, statutory flags, and vendor eligibility to assign classification and routing
+    input_criteria:
+      required_inputs:
+      - cause_of_loss
+      - estimated_damages
+      - coverage_type
+      - statutory_flags
+      optional_inputs:
+      - vendor_eligibility
+      - litigation_indicator
+      input_validation:
+      - Cause must map to classification taxonomy
+      - Estimated damages must be numeric or null
+      freshness_requirements:
+      - Classification rules must reflect current regulatory version
+      processing_steps:
+      - step: 1
+        description: Map cause of loss to classification categories
+      - step: 2
+        description: Apply damage threshold rules
+      - step: 3
+        description: Check statutory and vendor eligibility flags
+      - step: 4
+        description: Execute routing rule engine
+      business_rules:
+      - Catastrophe events override normal routing
+      - Litigation indicators force attorney assignment
+      - Standard claims route to adjuster queue
+      decision_points:
+      - decision: Classification Match
+        rule: If single category matches, assign automatically
+        expected_outcome: ClaimType set, routing task created
+      - decision: Ambiguous Classification
+        rule: If multiple categories match, route to senior triage
+        expected_outcome: Task escalated
+      output_criteria:
+      success_outputs:
+      - ClaimType: Standard property claim
+      - Routing assignment ID
+      failure_outputs:
+      - N/A (always produces a classification)
+      status_updates:
+      - ClaimStatus: CLASSIFIED -> ROUTED
+      emitted_events:
+      - fnol.classification.assigned
+      - fnol.routing.created
+      user_visible_outputs:
+      - Classification badge and assigned queue
+      edge_cases:
+      - Mixed cause of loss
+      - Coverage gap requiring coverage determination first
+      negative_scenarios:
+      - Missing cause of loss
+      - Outdated classification rules
+      explainability_expectations:
+      - Show rule chain that determined classification
+      audit_evidence:
+      - Rule version used
+      - Classification decision log
+      sample_test_scenarios:
+      - scenario: Standard windstorm claim
+        given: Cause=winds, damages=$50k, coverage=HO-3
+        when: Algorithm runs
+        then: Assigns Standard property claim, routes to adjuster
+      main_success_flow:
+      - step: System assigns routing
+        description: Creates task in assigned queue
+      alternate_flows:
+      - scenario: Litigation flag
+        behavior: Routes to legal team
+      exception_flows:
+      - scenario: Rule engine timeout
+        behavior: Falls back to default routing, flags for review
+      acceptance_criteria:
+      - Classification assigned within 5s of duplicate check
+      - Routing tasks created per rule configuration
+      - Rule chain logged for audit
+      data_dependencies:
+      - Classification reference data
+      - Routing configuration tables
+      audit_or_explainability_needs:
+      - Rule execution trace
+      - Classification rationale
+      layer_implications:
+      integration:
+      - Classification reference data sync
+      application:
+      - Classification service
+      - Routing engine
+- id: US-005
+  title: Generate statutory acknowledgments
+  persona: Compliance Auditor
+  persona_type: compliance_or_audit_user
+  trigger: Claim successfully classified and routed
+  story: As a compliance auditor, I want the system to automatically generate and deliver statutory acknowledgments within regulatory timeframes so that we remain compliant with Florida prompt pay and FNOL reporting requirements.
+  business_value: Prevents regulatory penalties, maintains consumer trust, and ensures exam-ready documentation.
+  priority: P0
+  preconditions:
+  - Claim is in ROUTED status
+  - Acknowledgment templates are configured
+  algorithm_to_be_tested:
+    name: Statutory Acknowledgment Generation Algorithm
+    purpose: Create and deliver required regulatory notifications within SLA
+    applies_when: Claim reaches ROUTED status
+    description: Pulls claim metadata, applies jurisdictional rules, generates acknowledgment content, and dispatches via configured channels
+    input_criteria:
+      required_inputs:
+      - claim_id
+      - reporter_contact
+      - jurisdiction
+      optional_inputs:
+      - preferred_channel
+      - language_preference
+      input_validation:
+      - Jurisdiction must match FL property rules
+      - Contact info must be valid
+      freshness_requirements:
+      - Templates must reflect current regulatory version
+      processing_steps:
+      - step: 1
+        description: Fetch claim and policy metadata
+      - step: 2
+        description: Apply jurisdictional acknowledgment rules
+      - step: 3
+        description: Render acknowledgment template
+      - step: 4
+        description: Dispatch via email/SMS/portal
+      business_rules:
+      - Acknowledgment must be sent within [Example: 24 hours] of intake
+      - Must include claim number, contact info, and next steps
+      decision_points:
+      - decision: Template Render Success
+        rule: If render succeeds, dispatch
+        expected_outcome: Acknowledgment sent
+      - decision: Dispatch Failure
+        rule: If dispatch fails, queue for retry
+        expected_outcome: Retry scheduled
+      output_criteria:
+      success_outputs:
+      - Acknowledgment ID
+      - Delivery status: SENT
+      failure_outputs:
+      - Delivery status: FAILED -> RETRY
+      status_updates:
+      - AcknowledgmentStatus: PENDING -> SENT or FAILED
+      emitted_events:
+      - fnol.acknowledgment.generated
+      - fnol.acknowledgment.sent
+      user_visible_outputs:
+      - Acknowledgment sent to reporter
+      edge_cases:
+      - Invalid email/phone format
+      - Regulatory template update mid-generation
+      negative_scenarios:
+      - Dispatch service outage
+      - Missing contact information
+      explainability_expectations:
+      - Log template version and jurisdiction rules applied
+      audit_evidence:
+      - Raw acknowledgment payload
+      - Dispatch timestamp and channel
+      sample_test_scenarios:
+      - scenario: Standard acknowledgment
+        given: Valid claim and contact
+        when: Routing completes
+        then: Acknowledgment sent within 24h
+      main_success_flow:
+      - step: System generates content
+        description: Renders template and dispatches
+      alternate_flows:
+      - scenario: Preferred channel unavailable
+        behavior: Falls back to secondary channel
+      exception_flows:
+      - scenario: Dispatch queue full
+        behavior: Retries with exponential backoff
+      acceptance_criteria:
+      - Acknowledgment sent within statutory SLA
+      - All dispatch attempts logged
+      - Template versions auditable
+      data_dependencies:
+      - Acknowledgment templates
+      - Dispatch service
+      audit_or_explainability_needs:
+      - Template version and jurisdiction rules
+      - Dispatch attempt logs
+      layer_implications:
+      integration:
+      - Email/SMS/Portal dispatch adapters
+      application:
+      - Acknowledgment service
+      - Template engine
+- id: US-006
+  title: Manage classification and routing configuration
+  persona: Rules & Configuration Manager
+  persona_type: admin_or_configuration_user
+  trigger: Business requires update to claim classification or routing rules
+  story: As a configuration manager, I want to update classification and routing rules without code deployment so that the system can adapt to regulatory or business changes quickly.
+  business_value: Reduces time-to-market for rule changes, minimizes deployment risk, and ensures business agility.
+  priority: P1
