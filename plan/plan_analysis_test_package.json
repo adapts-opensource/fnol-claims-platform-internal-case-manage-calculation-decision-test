@@ -1,0 +1,592 @@
+{
+  "plan_id": "fnol-phased-1783350481-action-plan",
+  "package_family": "test_package",
+  "application_name": "FNOL Claims Platform",
+  "status": "needs_review",
+  "overall_score": 77.7,
+  "ready_for_execution": false,
+  "required_features": [
+    "Policy Match Resolution",
+    "Date-of-Loss & Policy Period Validation",
+    "Product/Form Cause-of-Loss Validation",
+    "Duplicate Claim Detection & Handling",
+    "FNOL Triage & Classification Routing",
+    "FNOL State Machine Management",
+    "Validation-Driven Task Generation",
+    "Admin Rule Configuration Portal",
+    "Intake Exception & Manual Override Workflow",
+    "Validation Error & Missing Field Guidance",
+    "Policy Match Confidence Scoring & Disambiguation UI",
+    "Duplicate Claim Review & Audit Trail"
+  ],
+  "covered_features": [
+    "Policy Match Resolution",
+    "Date-of-Loss & Policy Period Validation",
+    "Product/Form Cause-of-Loss Validation",
+    "Duplicate Claim Detection & Handling",
+    "FNOL Triage & Classification Routing",
+    "FNOL State Machine Management",
+    "Validation-Driven Task Generation",
+    "Admin Rule Configuration Portal",
+    "Intake Exception & Manual Override Workflow",
+    "Validation Error & Missing Field Guidance",
+    "Policy Match Confidence Scoring & Disambiguation UI",
+    "Duplicate Claim Review & Audit Trail"
+  ],
+  "missing_features": [],
+  "dimension_scores": [
+    {
+      "category": "feature_coverage",
+      "score": 100.0,
+      "passed": true,
+      "finding_count": 0
+    },
+    {
+      "category": "security",
+      "score": 92.0,
+      "passed": true,
+      "finding_count": 1
+    },
+    {
+      "category": "gdpr",
+      "score": 12.0,
+      "passed": true,
+      "finding_count": 11
+    },
+    {
+      "category": "security",
+      "score": 100.0,
+      "passed": true,
+      "finding_count": 0
+    },
+    {
+      "category": "completeness",
+      "score": 100.0,
+      "passed": true,
+      "finding_count": 0
+    },
+    {
+      "category": "security",
+      "score": 100.0,
+      "passed": true,
+      "finding_count": 0
+    },
+    {
+      "category": "buildability",
+      "score": 40.0,
+      "passed": false,
+      "finding_count": 3
+    }
+  ],
+  "findings": [
+    {
+      "code": "TEST_AUTH_COVERAGE_MISSING",
+      "category": "security",
+      "severity": "warning",
+      "message": "Test plan does not reference authentication or session security.",
+      "recommendation": "Add test cases for authN/authZ, session expiry, and invalid credentials.",
+      "feature_label": "",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "security_compliance"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'submit_standard_fnol_ho3_active_policy' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'submit_fnol_unmatched_policy_no_claim_created' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'submit_fnol_date_of_loss_before_effective_date' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'submit_fnol_hw2_non_wind_cause_triggers_coverage_review' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'submit_fnol_with_malicious_payload_sanitized_or_rejected' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'orchestrate_valid_ho3_fanol_fast_track' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'orchestrate_out_of_period_dp3_coverage_review' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'orchestrate_hw2_wind_only_form_validation' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'orchestrate_input_sanitization_boundary_validation' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'submit_valid_fnol_active_policy' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+      "category": "gdpr",
+      "severity": "warning",
+      "message": "Test case 'submit_fnol_expired_policy_coverage_review' handles PII without explicit privacy controls in expected results.",
+      "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+      "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+      "evidence": "",
+      "auto_fixable": true,
+      "review_domain": "general_functional"
+    },
+    {
+      "code": "MISSING_PLAN_STEP",
+      "category": "buildability",
+      "severity": "error",
+      "message": "Pipeline missing required plan-phase step: index_requirement_chunks_redis",
+      "recommendation": "Ensure plan workflow runs activity for index_requirement_chunks_redis.",
+      "feature_label": "",
+      "evidence": "",
+      "auto_fixable": false,
+      "review_domain": "execution_pipeline"
+    },
+    {
+      "code": "MISSING_PLAN_STEP",
+      "category": "buildability",
+      "severity": "error",
+      "message": "Pipeline missing required plan-phase step: classify_capability_atoms",
+      "recommendation": "Ensure plan workflow runs activity for classify_capability_atoms.",
+      "feature_label": "",
+      "evidence": "",
+      "auto_fixable": false,
+      "review_domain": "execution_pipeline"
+    },
+    {
+      "code": "MISSING_PLAN_STEP",
+      "category": "buildability",
+      "severity": "error",
+      "message": "Pipeline missing required plan-phase step: build_capability_map",
+      "recommendation": "Ensure plan workflow runs activity for build_capability_map.",
+      "feature_label": "",
+      "evidence": "",
+      "auto_fixable": false,
+      "review_domain": "execution_pipeline"
+    }
+  ],
+  "review_chunks": [
+    {
+      "chunk_id": "chunk:execution_pipeline",
+      "domain": "execution_pipeline",
+      "label": "Execution pipeline & buildability",
+      "chunk_type": "cross_cutting",
+      "scope_items": [
+        "dimension:buildability"
+      ],
+      "feature_count": 0,
+      "case_count": 0,
+      "score": 40.0,
+      "passed": false,
+      "review_priority": "high",
+      "finding_count": 3,
+      "findings": [
+        {
+          "code": "MISSING_PLAN_STEP",
+          "category": "buildability",
+          "severity": "error",
+          "message": "Pipeline missing required plan-phase step: index_requirement_chunks_redis",
+          "recommendation": "Ensure plan workflow runs activity for index_requirement_chunks_redis.",
+          "feature_label": "",
+          "evidence": "",
+          "auto_fixable": false,
+          "review_domain": "execution_pipeline"
+        },
+        {
+          "code": "MISSING_PLAN_STEP",
+          "category": "buildability",
+          "severity": "error",
+          "message": "Pipeline missing required plan-phase step: classify_capability_atoms",
+          "recommendation": "Ensure plan workflow runs activity for classify_capability_atoms.",
+          "feature_label": "",
+          "evidence": "",
+          "auto_fixable": false,
+          "review_domain": "execution_pipeline"
+        },
+        {
+          "code": "MISSING_PLAN_STEP",
+          "category": "buildability",
+          "severity": "error",
+          "message": "Pipeline missing required plan-phase step: build_capability_map",
+          "recommendation": "Ensure plan workflow runs activity for build_capability_map.",
+          "feature_label": "",
+          "evidence": "",
+          "auto_fixable": false,
+          "review_domain": "execution_pipeline"
+        }
+      ],
+      "improvement_actions": [
+        "Ensure plan workflow runs activity for index_requirement_chunks_redis.",
+        "Ensure plan workflow runs activity for classify_capability_atoms.",
+        "Ensure plan workflow runs activity for build_capability_map."
+      ]
+    },
+    {
+      "chunk_id": "chunk:general_functional",
+      "domain": "general_functional",
+      "label": "General functional scope",
+      "chunk_type": "feature_domain",
+      "scope_items": [
+        "Duplicate Claim Detection & Handling",
+        "FNOL State Machine Management",
+        "FNOL Triage & Classification Routing",
+        "Insured Engagement & Tracking:orchestration:validation",
+        "Intake Exception & Manual Override Workflow",
+        "Validation Error & Missing Field Guidance",
+        "Validation-Driven Task Generation"
+      ],
+      "feature_count": 1,
+      "case_count": 16,
+      "score": 12.0,
+      "passed": true,
+      "review_priority": "medium",
+      "finding_count": 11,
+      "findings": [
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'submit_standard_fnol_ho3_active_policy' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'submit_fnol_unmatched_policy_no_claim_created' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'submit_fnol_date_of_loss_before_effective_date' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'submit_fnol_hw2_non_wind_cause_triggers_coverage_review' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'submit_fnol_with_malicious_payload_sanitized_or_rejected' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'orchestrate_valid_ho3_fanol_fast_track' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'orchestrate_out_of_period_dp3_coverage_review' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'orchestrate_hw2_wind_only_form_validation' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'orchestrate_input_sanitization_boundary_validation' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'submit_valid_fnol_active_policy' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        },
+        {
+          "code": "PII_CASE_WITHOUT_GDPR_CONTROLS",
+          "category": "gdpr",
+          "severity": "warning",
+          "message": "Test case 'submit_fnol_expired_policy_coverage_review' handles PII without explicit privacy controls in expected results.",
+          "recommendation": "Document lawful basis, retention, and erasure/export behavior in expectedResults.",
+          "feature_label": "Insured Engagement & Tracking:orchestration:validation",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "general_functional"
+        }
+      ],
+      "improvement_actions": [
+        "Document lawful basis, retention, and erasure/export behavior in expectedResults."
+      ]
+    },
+    {
+      "chunk_id": "chunk:security_compliance",
+      "domain": "security_compliance",
+      "label": "Security & compliance",
+      "chunk_type": "cross_cutting",
+      "scope_items": [
+        "Duplicate Claim Review & Audit Trail",
+        "dimension:security",
+        "globalGuidance"
+      ],
+      "feature_count": 0,
+      "case_count": 0,
+      "score": 92.0,
+      "passed": true,
+      "review_priority": "medium",
+      "finding_count": 1,
+      "findings": [
+        {
+          "code": "TEST_AUTH_COVERAGE_MISSING",
+          "category": "security",
+          "severity": "warning",
+          "message": "Test plan does not reference authentication or session security.",
+          "recommendation": "Add test cases for authN/authZ, session expiry, and invalid credentials.",
+          "feature_label": "",
+          "evidence": "",
+          "auto_fixable": true,
+          "review_domain": "security_compliance"
+        }
+      ],
+      "improvement_actions": [
+        "Add test cases for authN/authZ, session expiry, and invalid credentials."
+      ]
+    },
+    {
+      "chunk_id": "chunk:admin_operations",
+      "domain": "admin_operations",
+      "label": "Admin & back-office",
+      "chunk_type": "feature_domain",
+      "scope_items": [
+        "Admin Rule Configuration Portal"
+      ],
+      "feature_count": 1,
+      "case_count": 1,
+      "score": 100.0,
+      "passed": true,
+      "review_priority": "low",
+      "finding_count": 0,
+      "findings": [],
+      "improvement_actions": []
+    },
+    {
+      "chunk_id": "chunk:authorization_access",
+      "domain": "authorization_access",
+      "label": "Authorization & access control",
+      "chunk_type": "feature_domain",
+      "scope_items": [
+        "Date-of-Loss & Policy Period Validation",
+        "Policy Match Confidence Scoring & Disambiguation UI",
+        "Policy Match Resolution"
+      ],
+      "feature_count": 0,
+      "case_count": 0,
+      "score": 100.0,
+      "passed": true,
+      "review_priority": "low",
+      "finding_count": 0,
+      "findings": [],
+      "improvement_actions": []
+    },
+    {
+      "chunk_id": "chunk:catalog_inventory",
+      "domain": "catalog_inventory",
+      "label": "Catalog & inventory",
+      "chunk_type": "feature_domain",
+      "scope_items": [
+        "Product/Form Cause-of-Loss Validation"
+      ],
+      "feature_count": 0,
+      "case_count": 0,
+      "score": 100.0,
+      "passed": true,
+      "review_priority": "low",
+      "finding_count": 0,
+      "findings": [],
+      "improvement_actions": []
+    },
+    {
+      "chunk_id": "chunk:data_privacy",
+      "domain": "data_privacy",
+      "label": "Data privacy & GDPR",
+      "chunk_type": "cross_cutting",
+      "scope_items": [
+        "dimension:gdpr"
+      ],
+      "feature_count": 0,
+      "case_count": 0,
+      "score": 100.0,
+      "passed": true,
+      "review_priority": "low",
+      "finding_count": 0,
+      "findings": [],
+      "improvement_actions": []
+    },
+    {
+      "chunk_id": "chunk:requirements_scope",
+      "domain": "requirements_scope",
+      "label": "Requirements & feature scope",
+      "chunk_type": "cross_cutting",
+      "scope_items": [
+        "dimension:feature_coverage",
+        "requirementSpecification"
+      ],
+      "feature_count": 0,
+      "case_count": 0,
+      "score": 100.0,
+      "passed": true,
+      "review_priority": "low",
+      "finding_count": 0,
+      "findings": [],
+      "improvement_actions": []
+    },
+    {
+      "chunk_id": "chunk:test_quality",
+      "domain": "test_quality",
+      "label": "Test coverage & quality",
+      "chunk_type": "cross_cutting",
+      "scope_items": [
+        "dimension:completeness"
+      ],
+      "feature_count": 0,
+      "case_count": 0,
+      "score": 100.0,
+      "passed": true,
+      "review_priority": "low",
+      "finding_count": 0,
+      "findings": [],
+      "improvement_actions": []
+    }
+  ],
+  "improvements_applied": [],
+  "analyzed_at": "2026-07-07T16:06:12+00:00"
+}

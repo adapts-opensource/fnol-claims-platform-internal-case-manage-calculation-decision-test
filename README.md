@@ -1,3 +1,3 @@
-# fnol-claims-platform-internal-case-manage-calculation-decision-test
+# fnol_claims_platform_internal_case_management_calculation_decision_test_package
 
-Created by adapts-bot.
+Generated java test package.
